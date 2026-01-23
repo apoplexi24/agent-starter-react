@@ -1,3 +1,4 @@
+import { useState, type ComponentProps, type FormEvent } from 'react';
 import { Button } from '@/components/livekit/button';
 
 function WelcomeImage() {
@@ -20,14 +21,22 @@ function WelcomeImage() {
 
 interface WelcomeViewProps {
   startButtonText: string;
-  onStartCall: () => void;
+  onStartCall: (options: { prompt: string; voiceId: string }) => void;
 }
 
 export const WelcomeView = ({
   startButtonText,
   onStartCall,
   ref,
-}: React.ComponentProps<'div'> & WelcomeViewProps) => {
+}: ComponentProps<'div'> & WelcomeViewProps) => {
+  const [prompt, setPrompt] = useState('');
+  const [voiceId, setVoiceId] = useState('');
+
+  const handleStartCall = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onStartCall({ prompt, voiceId });
+  };
+
   return (
     <div ref={ref}>
       <section className="bg-background flex flex-col items-center justify-center text-center">
@@ -37,9 +46,45 @@ export const WelcomeView = ({
           Chat live with your voice AI agent
         </p>
 
-        <Button variant="primary" size="lg" onClick={onStartCall} className="mt-6 w-64 font-mono">
-          {startButtonText}
-        </Button>
+        <form onSubmit={handleStartCall} className="mt-6 flex w-full max-w-md flex-col gap-4">
+          <div className="text-left">
+            <label
+              htmlFor="call-prompt"
+              className="text-muted-foreground block pb-1 text-xs font-medium uppercase tracking-wide"
+            >
+              Prompt
+            </label>
+            <input
+              id="call-prompt"
+              name="prompt"
+              type="text"
+              value={prompt}
+              placeholder="Enter the prompt for the agent"
+              onChange={(event) => setPrompt(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            />
+          </div>
+          <div className="text-left">
+            <label
+              htmlFor="call-voice-id"
+              className="text-muted-foreground block pb-1 text-xs font-medium uppercase tracking-wide"
+            >
+              Voice ID
+            </label>
+            <input
+              id="call-voice-id"
+              name="voiceId"
+              type="text"
+              value={voiceId}
+              placeholder="Enter the voice ID"
+              onChange={(event) => setVoiceId(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            />
+          </div>
+          <Button type="submit" variant="primary" size="lg" className="w-full font-mono">
+            {startButtonText}
+          </Button>
+        </form>
       </section>
 
       <div className="fixed bottom-5 left-0 flex w-full items-center justify-center">

@@ -3,8 +3,15 @@ import { Room, RoomEvent, TokenSource } from 'livekit-client';
 import { AppConfig } from '@/app-config';
 import { toastAlert } from '@/components/livekit/alert-toast';
 
+interface StartSessionOptions {
+  prompt: string;
+  voiceId: string;
+}
+
 export function useRoom(appConfig: AppConfig) {
   const aborted = useRef(false);
+  const promptRef = useRef('');
+  const voiceIdRef = useRef('');
   const room = useMemo(() => new Room(), []);
   const [isSessionActive, setIsSessionActive] = useState(false);
 
@@ -40,7 +47,7 @@ export function useRoom(appConfig: AppConfig) {
     () =>
       TokenSource.custom(async () => {
         const url = new URL(
-          process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? '/api/connection-details',
+          process.env.NEXT_PUBLIC_TOKEN_ENDPOINT ?? '/api/token',
           window.location.origin
         );
 
@@ -52,11 +59,8 @@ export function useRoom(appConfig: AppConfig) {
               'X-Sandbox-Id': appConfig.sandboxId ?? '',
             },
             body: JSON.stringify({
-              room_config: appConfig.agentName
-                ? {
-                    agents: [{ agent_name: appConfig.agentName }],
-                  }
-                : undefined,
+              prompt: promptRef.current,
+              voice_id: voiceIdRef.current,
             }),
           });
           return await res.json();
@@ -68,7 +72,9 @@ export function useRoom(appConfig: AppConfig) {
     [appConfig]
   );
 
-  const startSession = useCallback(() => {
+  const startSession = useCallback((options: StartSessionOptions) => {
+    promptRef.current = options.prompt;
+    voiceIdRef.current = options.voiceId;
     setIsSessionActive(true);
 
     if (room.state === 'disconnected') {
@@ -77,11 +83,14 @@ export function useRoom(appConfig: AppConfig) {
         room.localParticipant.setMicrophoneEnabled(true, undefined, {
           preConnectBuffer: isPreConnectBufferEnabled,
         }),
-        tokenSource
-          .fetch({ agentName: appConfig.agentName })
-          .then((connectionDetails) =>
-            room.connect(connectionDetails.serverUrl, connectionDetails.participantToken)
-          ),
+        tokenSource.fetch().then((connectionDetails) => {
+          const serverUrl =
+            process.env.NEXT_PUBLIC_LIVEKIT_URL ?? connectionDetails.serverUrl;
+          if (!serverUrl) {
+            throw new Error('LiveKit server URL is not configured.');
+          }
+          return room.connect(serverUrl, connectionDetails.participantToken);
+        }),
       ]).catch((error) => {
         if (aborted.current) {
           // Once the effect has cleaned up after itself, drop any errors
