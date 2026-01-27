@@ -1,4 +1,4 @@
-import { useState, type ComponentProps, type FormEvent } from 'react';
+import { type ComponentProps, type FormEvent, useState } from 'react';
 import { Button } from '@/components/livekit/button';
 
 function WelcomeImage() {
@@ -50,7 +50,7 @@ export const WelcomeView = ({
           <div className="text-left">
             <label
               htmlFor="call-prompt"
-              className="text-muted-foreground block pb-1 text-xs font-medium uppercase tracking-wide"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
             >
               Prompt
             </label>
@@ -67,7 +67,7 @@ export const WelcomeView = ({
           <div className="text-left">
             <label
               htmlFor="call-voice-id"
-              className="text-muted-foreground block pb-1 text-xs font-medium uppercase tracking-wide"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
             >
               Voice ID
             </label>

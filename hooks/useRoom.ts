@@ -83,7 +83,7 @@ export function useRoom(appConfig: AppConfig) {
         room.localParticipant.setMicrophoneEnabled(true, undefined, {
           preConnectBuffer: isPreConnectBufferEnabled,
         }),
-        tokenSource.fetch().then((connectionDetails) => {
+        tokenSource.fetch({}).then((connectionDetails) => {
           const serverUrl =
             process.env.NEXT_PUBLIC_LIVEKIT_URL ?? connectionDetails.serverUrl;
           if (!serverUrl) {
