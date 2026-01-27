@@ -21,7 +21,7 @@ function WelcomeImage() {
 
 interface WelcomeViewProps {
   startButtonText: string;
-  onStartCall: (options: { prompt: string; voiceId: string }) => void;
+  onStartCall: (options: { prompt: string; voiceId: string; clientcode: string }) => void;
 }
 
 export const WelcomeView = ({
@@ -31,10 +31,11 @@ export const WelcomeView = ({
 }: ComponentProps<'div'> & WelcomeViewProps) => {
   const [prompt, setPrompt] = useState('');
   const [voiceId, setVoiceId] = useState('');
+  const [clientcode, setClientcode] = useState('');
 
   const handleStartCall = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onStartCall({ prompt, voiceId });
+    onStartCall({ prompt, voiceId, clientcode });
   };
 
   return (
@@ -78,6 +79,23 @@ export const WelcomeView = ({
               value={voiceId}
               placeholder="Enter the voice ID"
               onChange={(event) => setVoiceId(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            />
+          </div>
+          <div className="text-left">
+            <label
+              htmlFor="call-clientcode"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
+            >
+              Clientcode
+            </label>
+            <input
+              id="call-clientcode"
+              name="clientcode"
+              type="text"
+              value={clientcode}
+              placeholder="Enter the clientcode"
+              onChange={(event) => setClientcode(event.target.value)}
               className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
             />
           </div>
