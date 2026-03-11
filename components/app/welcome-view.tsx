@@ -21,7 +21,7 @@ function WelcomeImage() {
 
 interface WelcomeViewProps {
   startButtonText: string;
-  onStartCall: (options: { prompt: string; voiceId: string; clientcode: string }) => void;
+  onStartCall: (options: { prompt: string; language: string; clientcode: string }) => void;
 }
 
 export const WelcomeView = ({
@@ -30,12 +30,12 @@ export const WelcomeView = ({
   ref,
 }: ComponentProps<'div'> & WelcomeViewProps) => {
   const [prompt, setPrompt] = useState('');
-  const [voiceId, setVoiceId] = useState('');
+  const [language, setLanguage] = useState('HINDI');
   const [clientcode, setClientcode] = useState('');
 
   const handleStartCall = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onStartCall({ prompt, voiceId, clientcode });
+    onStartCall({ prompt, language, clientcode });
   };
 
   return (
@@ -67,23 +67,6 @@ export const WelcomeView = ({
           </div>
           <div className="text-left">
             <label
-              htmlFor="call-voice-id"
-              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
-            >
-              Voice ID
-            </label>
-            <input
-              id="call-voice-id"
-              name="voiceId"
-              type="text"
-              value={voiceId}
-              placeholder="Enter the voice ID"
-              onChange={(event) => setVoiceId(event.target.value)}
-              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
-            />
-          </div>
-          <div className="text-left">
-            <label
               htmlFor="call-clientcode"
               className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
             >
@@ -98,6 +81,29 @@ export const WelcomeView = ({
               onChange={(event) => setClientcode(event.target.value)}
               className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
             />
+          </div>
+          <div className="text-left">
+            <label
+              htmlFor="call-language"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
+            >
+              Language
+            </label>
+            <select
+              id="call-language"
+              name="language"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            >
+              <option value="TELUGU">Telugu</option>
+              <option value="KANNADA">Kannada</option>
+              <option value="TAMIL">Tamil</option>
+              <option value="MALAYALAM">Malayalam</option>
+              <option value="MARATHI">Marathi</option>
+              <option value="GUJARATHI">Gujarathi</option>
+              <option value="HINDI">Hindi</option>
+            </select>
           </div>
           <Button type="submit" variant="primary" size="lg" className="w-full font-mono">
             {startButtonText}

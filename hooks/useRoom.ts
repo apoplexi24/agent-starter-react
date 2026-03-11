@@ -5,14 +5,14 @@ import { toastAlert } from '@/components/livekit/alert-toast';
 
 interface StartSessionOptions {
   prompt: string;
-  voiceId: string;
+  language: string;
   clientcode: string;
 }
 
 export function useRoom(appConfig: AppConfig) {
   const aborted = useRef(false);
   const promptRef = useRef('');
-  const voiceIdRef = useRef('');
+  const languageRef = useRef('');
   const clientcodeRef = useRef('');
   const room = useMemo(() => new Room(), []);
   const [isSessionActive, setIsSessionActive] = useState(false);
@@ -62,7 +62,7 @@ export function useRoom(appConfig: AppConfig) {
             },
             body: JSON.stringify({
               prompt: promptRef.current,
-              voice_id: voiceIdRef.current,
+              language: languageRef.current,
               clientcode: clientcodeRef.current,
             }),
           });
@@ -77,7 +77,7 @@ export function useRoom(appConfig: AppConfig) {
 
   const startSession = useCallback((options: StartSessionOptions) => {
     promptRef.current = options.prompt;
-    voiceIdRef.current = options.voiceId;
+    languageRef.current = options.language;
     clientcodeRef.current = options.clientcode;
     setIsSessionActive(true);
 
