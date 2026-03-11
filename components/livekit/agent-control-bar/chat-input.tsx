@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'motion/react';
+import { type HTMLMotionProps, motion } from 'motion/react';
 import { PaperPlaneRightIcon, SpinnerIcon } from '@phosphor-icons/react/dist/ssr';
 import { Button } from '@/components/livekit/button';
 
-const MOTION_PROPS = {
+const MOTION_PROPS: HTMLMotionProps<'div'> = {
   variants: {
     hidden: {
       height: 0,

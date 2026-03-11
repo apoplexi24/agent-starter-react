@@ -75,43 +75,45 @@ export function useRoom(appConfig: AppConfig) {
     [appConfig]
   );
 
-  const startSession = useCallback((options: StartSessionOptions) => {
-    promptRef.current = options.prompt;
-    languageRef.current = options.language;
-    clientcodeRef.current = options.clientcode;
-    setIsSessionActive(true);
+  const startSession = useCallback(
+    (options: StartSessionOptions) => {
+      promptRef.current = options.prompt;
+      languageRef.current = options.language;
+      clientcodeRef.current = options.clientcode;
+      setIsSessionActive(true);
 
-    if (room.state === 'disconnected') {
-      const { isPreConnectBufferEnabled } = appConfig;
-      Promise.all([
-        room.localParticipant.setMicrophoneEnabled(true, undefined, {
-          preConnectBuffer: isPreConnectBufferEnabled,
-        }),
-        tokenSource.fetch({}).then((connectionDetails) => {
-          const serverUrl =
-            process.env.NEXT_PUBLIC_LIVEKIT_URL ?? connectionDetails.serverUrl;
-          if (!serverUrl) {
-            throw new Error('LiveKit server URL is not configured.');
+      if (room.state === 'disconnected') {
+        const { isPreConnectBufferEnabled } = appConfig;
+        Promise.all([
+          room.localParticipant.setMicrophoneEnabled(true, undefined, {
+            preConnectBuffer: isPreConnectBufferEnabled,
+          }),
+          tokenSource.fetch({}).then((connectionDetails) => {
+            const serverUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL ?? connectionDetails.serverUrl;
+            if (!serverUrl) {
+              throw new Error('LiveKit server URL is not configured.');
+            }
+            return room.connect(serverUrl, connectionDetails.participantToken);
+          }),
+        ]).catch((error) => {
+          if (aborted.current) {
+            // Once the effect has cleaned up after itself, drop any errors
+            //
+            // These errors are likely caused by this effect rerunning rapidly,
+            // resulting in a previous run `disconnect` running in parallel with
+            // a current run `connect`
+            return;
           }
-          return room.connect(serverUrl, connectionDetails.participantToken);
-        }),
-      ]).catch((error) => {
-        if (aborted.current) {
-          // Once the effect has cleaned up after itself, drop any errors
-          //
-          // These errors are likely caused by this effect rerunning rapidly,
-          // resulting in a previous run `disconnect` running in parallel with
-          // a current run `connect`
-          return;
-        }
 
-        toastAlert({
-          title: 'There was an error connecting to the agent',
-          description: `${error.name}: ${error.message}`,
+          toastAlert({
+            title: 'There was an error connecting to the agent',
+            description: `${error.name}: ${error.message}`,
+          });
         });
-      });
-    }
-  }, [room, appConfig, tokenSource]);
+      }
+    },
+    [room, appConfig, tokenSource]
+  );
 
   const endSession = useCallback(() => {
     setIsSessionActive(false);
