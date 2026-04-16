@@ -21,7 +21,12 @@ function WelcomeImage() {
 
 interface WelcomeViewProps {
   startButtonText: string;
-  onStartCall: (options: { prompt: string; language: string; clientcode: string }) => void;
+  onStartCall: (options: {
+    prompt: string;
+    language: string;
+    clientcode: string;
+    agentname: string;
+  }) => void;
 }
 
 export const WelcomeView = ({
@@ -32,10 +37,11 @@ export const WelcomeView = ({
   const [prompt, setPrompt] = useState('');
   const [language, setLanguage] = useState('HINDI');
   const [clientcode, setClientcode] = useState('');
+  const [agentname, setAgentname] = useState('trial_agent');
 
   const handleStartCall = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onStartCall({ prompt, language, clientcode });
+    onStartCall({ prompt, language, clientcode, agentname });
   };
 
   return (
@@ -64,6 +70,24 @@ export const WelcomeView = ({
               onChange={(event) => setPrompt(event.target.value)}
               className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
             />
+          </div>
+          <div className="text-left">
+            <label
+              htmlFor="call-agentname"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
+            >
+              Agent
+            </label>
+            <select
+              id="call-agentname"
+              name="agentname"
+              value={agentname}
+              onChange={(event) => setAgentname(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            >
+              <option value="trial_agent">trial_agent</option>
+              <option value="payments_trial_bot">payments_trial_bot</option>
+            </select>
           </div>
           <div className="text-left">
             <label

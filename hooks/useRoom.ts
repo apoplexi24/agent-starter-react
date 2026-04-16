@@ -7,6 +7,7 @@ interface StartSessionOptions {
   prompt: string;
   language: string;
   clientcode: string;
+  agentname: string;
 }
 
 export function useRoom(appConfig: AppConfig) {
@@ -14,6 +15,7 @@ export function useRoom(appConfig: AppConfig) {
   const promptRef = useRef('');
   const languageRef = useRef('');
   const clientcodeRef = useRef('');
+  const agentnameRef = useRef('trial_agent');
   const room = useMemo(() => new Room(), []);
   const [isSessionActive, setIsSessionActive] = useState(false);
 
@@ -64,6 +66,7 @@ export function useRoom(appConfig: AppConfig) {
               prompt: promptRef.current,
               language: languageRef.current,
               clientcode: clientcodeRef.current,
+              agentname: agentnameRef.current,
             }),
           });
           return await res.json();
@@ -80,6 +83,7 @@ export function useRoom(appConfig: AppConfig) {
       promptRef.current = options.prompt;
       languageRef.current = options.language;
       clientcodeRef.current = options.clientcode;
+      agentnameRef.current = options.agentname;
       setIsSessionActive(true);
 
       if (room.state === 'disconnected') {
