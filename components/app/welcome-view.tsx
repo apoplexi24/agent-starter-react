@@ -88,6 +88,7 @@ export const WelcomeView = ({
               <option value="trial_agent">KYC Bot</option>
               <option value="payments_trial_bot">Payment Bot</option>
               <option value="mf_trial_bot">MF Bot</option>
+              <option value="orders_trial_bot">Orders Bot</option>
             </select>
           </div>
           <div className="text-left">
