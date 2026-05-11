@@ -130,7 +130,7 @@ export const WelcomeView = ({
               <option value="TAMIL">Tamil</option>
               <option value="MALAYALAM">Malayalam</option>
               <option value="MARATHI">Marathi</option>
-              <option value="GUJARATHI">Gujarathi</option>
+              <option value="GUJARATI">Gujarati</option>
               <option value="BENGALI">Bengali</option>
               <option value="HINDI">Hindi</option>
             </select>
