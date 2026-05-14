@@ -26,6 +26,7 @@ interface WelcomeViewProps {
     language: string;
     clientcode: string;
     agentname: string;
+    voiceId?: string;
   }) => void;
 }
 
@@ -38,10 +39,11 @@ export const WelcomeView = ({
   const [language, setLanguage] = useState('HINDI');
   const [clientcode, setClientcode] = useState('');
   const [agentname, setAgentname] = useState('trial_agent');
+  const [voiceId, setVoiceId] = useState('');
 
   const handleStartCall = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onStartCall({ prompt, language, clientcode, agentname });
+    onStartCall({ prompt, language, clientcode, agentname, voiceId: voiceId || undefined });
   };
 
   return (
@@ -134,6 +136,23 @@ export const WelcomeView = ({
               <option value="BENGALI">Bengali</option>
               <option value="HINDI">Hindi</option>
             </select>
+          </div>
+          <div className="text-left">
+            <label
+              htmlFor="call-voiceid"
+              className="text-muted-foreground block pb-1 text-xs font-medium tracking-wide uppercase"
+            >
+              Voice ID (Optional)
+            </label>
+            <input
+              id="call-voiceid"
+              name="voiceId"
+              type="text"
+              value={voiceId}
+              placeholder="Enter custom Cartesia voice ID"
+              onChange={(event) => setVoiceId(event.target.value)}
+              className="border-input/50 bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-10 w-full rounded-md border px-3 text-sm focus-visible:ring-[3px] focus-visible:outline-none"
+            />
           </div>
           <Button type="submit" variant="primary" size="lg" className="w-full font-mono">
             {startButtonText}

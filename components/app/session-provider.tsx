@@ -13,6 +13,7 @@ const SessionContext = createContext<{
     language: string;
     clientcode: string;
     agentname: string;
+    voiceId?: string;
   }) => void;
   endSession: () => void;
 }>({
